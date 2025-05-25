@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 from bs4 import BeautifulSoup
-import re
-
 
 
 def calculate_loan(principal, annual_interest_rate, duration_years):
