@@ -1,4 +1,7 @@
+
 import streamlit as st
+import pandas as pd
+
 
 st.title("Visualisation des données DVF")
 
@@ -6,9 +9,6 @@ if st.button("Ouvrir l'application DVF officielle"):
     js = "window.open('https://app.dvf.etalab.gouv.fr/', '_blank').focus();"
     st.components.v1.html(f"<script>{js}</script>")
 
-
-import streamlit as st
-import pandas as pd
 
 st.title("Exploration des données foncières DVF 🏠")
 
