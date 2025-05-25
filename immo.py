@@ -99,23 +99,7 @@ principal_loan = st.sidebar.number_input("Capital emprunté (€)", min_value=10
 interest_rate = st.sidebar.number_input("Taux d'intérêt annuel (%)", min_value=0.1, max_value=10.0, value=1.5, step=0.01)
 loan_duration_years = st.sidebar.slider("Durée du remboursement (années)", min_value=1, max_value=30, value=20)
 
-# --- Nouvelle section pour les taux Empruntis ---
-st.sidebar.markdown("---")
-st.sidebar.header("Taux Actuels du Marché (Empruntis)")
 
-if st.sidebar.button("Récupérer les taux Empruntis 📊"):
-    with st.spinner("Récupération des taux Empruntis en cours..."):
-        empruntis_rates = get_empruntis_rates()
-        if empruntis_rates:
-            st.sidebar.subheader("Taux Moyens Empruntis :")
-            # Affiche chaque taux trouvé pour les durées spécifiées
-            for duration in sorted(empruntis_rates.keys()): # Pour un affichage ordonné
-                st.sidebar.success(f"**{duration} ans : {empruntis_rates[duration]} %**")
-            
-            # Optionnel : Vous pourriez utiliser ces taux pour pré-remplir un champ
-            # ou les afficher dans le corps principal de l'application si pertinent.
-        else:
-            st.sidebar.error("Les taux Empruntis n'ont pas pu être récupérés.")
 
 # Calcul des résultats
 if st.sidebar.button("Calculer le Prêt 🚀"):
@@ -230,54 +214,6 @@ else:
 
 st.markdown("---")
 st.markdown("Développé en binôme avec Gemini ;)")
-
-def get_empruntis_rates():
-    """
-    Récupère les taux moyens immobiliers pour 15, 20 et 25 ans depuis le site Empruntis.
-    Retourne un dictionnaire {durée: taux_moyen}.
-    """
-    url = "https://www.empruntis.com/financement/actualites/barometre-national.php"
-    
-    # Dictionnaire pour stocker les taux par durée
-    rates = {} 
-    
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Lève une exception pour les codes d'état HTTP erreurs (4xx ou 5xx)
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        all_text = soup.get_text() # Récupère tout le texte de la page
-
-        # Regex pour trouver une durée (15, 20, 25 ans) suivie de deux pourcentages.
-        # Le deuxième pourcentage est généralement le "Taux Moyen" sur ces baromètres.
-        # Exemple de motif recherché dans le texte : "15 ans. 2,25 % (stable) 2,65 % (stable)"
-        # On capture la durée, puis le premier pourcentage (mini), et enfin le second (moyen).
-        pattern = re.compile(r'(\d{2})\s*ans\D*([\d,\.]+\s*%)(\s*\(\w+\))?\s*([\d,\.]+\s*%)')
-        
-        # Parcourir toutes les correspondances trouvées dans le texte
-        for match in pattern.finditer(all_text):
-            duration = int(match.group(1)) # Capture la durée (ex: 15, 20, 25)
-            raw_average_rate = match.group(4) # Capture le deuxième pourcentage, qui est le taux moyen
-            
-            # Si la durée est parmi celles que nous cherchons
-            if duration in [15, 20, 25]:
-                # Nettoyer le texte du taux (remplacer ',' par '.', supprimer '%', espaces)
-                cleaned_rate = raw_average_rate.replace(',', '.').replace('%', '').strip()
-                rates[duration] = float(cleaned_rate) # Convertir en float et stocker dans le dictionnaire
-                
-        # Vérifier si des taux ont été trouvés
-        if rates:
-            return rates
-        else:
-            st.warning("Impossible de trouver les taux moyens pour 15, 20 et 25 ans sur Empruntis. La structure du site a peut-être changé ou le motif de recherche est incorrect.")
-            return None
-
-    except requests.exceptions.RequestException as e:
-        st.error(f"Erreur lors de la récupération de la page web Empruntis : {e}")
-        return None
-    except Exception as e:
-        st.error(f"Une erreur inattendue s'est produite lors du scraping Empruntis : {e}")
-        return None
 
 
 def get_meilleurtaux_rate():
