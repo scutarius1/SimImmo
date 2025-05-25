@@ -2,6 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import streamlit as st
 
+# -------------------- Interface Streamlit -------------------- #
+st.title("Taux Moyen Immobilier ")
+st.write("Récupération du taux moyen affiché sur les sites spécialisés.")
 
 # -------------------- Fonction de scraping -------------------- #
 def get_meilleurtaux_rate():
@@ -35,10 +38,10 @@ def get_meilleurtaux_rate():
         st.error(f"Une erreur inattendue s'est produite : {e}")
     return None
 
-# -------------------- Interface Streamlit -------------------- #
 
-st.title("Taux Moyen Immobilier ")
-st.write("Récupération du taux moyen affiché sur la page d'accueil de Meilleurtaux.com.")
+
+
+
 
 if st.button("Afficher le taux sur Meilleurtaux.com"):
     with st.spinner("Récupération du taux en cours..."):

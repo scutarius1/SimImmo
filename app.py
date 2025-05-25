@@ -90,17 +90,24 @@ st.set_page_config(
 )
 
 st.title("🏡 Simulateur de Prêt Immobilier")
-st.markdown("Calculez les détails de votre prêt et visualisez l'évolution de votre remboursement.")
+st.info("Veuillez entrer les paramètres de votre prêt et cliquer sur 'Calculer le Prêt' pour visualisez l'évolution de votre remboursement.")
 
 # Section des entrées utilisateur
-st.sidebar.header("Paramètres du Prêt")
-principal_loan = st.sidebar.number_input("Capital emprunté (€)", min_value=10000, max_value=10000000, value=250000, step=10000)
-interest_rate = st.sidebar.number_input("Taux d'intérêt annuel (%)", min_value=0.1, max_value=10.0, value=1.5, step=0.01)
-loan_duration_years = st.sidebar.slider("Durée du remboursement (années)", min_value=1, max_value=30, value=20)
+st.header("Paramètres du Prêt")
+# Crée deux colonnes pour le capital et le taux
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    principal_loan = st.number_input("Capital emprunté (€)", min_value=10000, max_value=10000000, value=250000, step=10000)
+
+with col2:
+    interest_rate = st.number_input("Taux d'intérêt annuel (%)", min_value=0.1, max_value=10.0, value=1.5, step=0.01)
+with col3:
+    loan_duration_years = st.slider("Durée du remboursement (années)", min_value=1, max_value=30, value=20)
 
 
 # Calcul des résultats
-if st.sidebar.button("Calculer le Prêt 🚀"):
+if st.button("Calculer le Prêt 🚀"):
     monthly_payment, total_credit_cost, amortization_table = calculate_loan(
         principal_loan, interest_rate, loan_duration_years
     )
@@ -207,10 +214,9 @@ if st.sidebar.button("Calculer le Prêt 🚀"):
         'Intérêts payés (cumulés)': "{:,.2f} €"
     }))
 
-else:
-    st.info("Veuillez entrer les paramètres de votre prêt et cliquer sur 'Calculer le Prêt' pour voir les résultats.")
+#else:
+    #st.info("Veuillez cliquer sur 'Calculer le Prêt' pour voir les résultats.")
 
-st.markdown("---")
 
 st.sidebar.markdown("---")
 st.sidebar.title("Actualité des taux")
