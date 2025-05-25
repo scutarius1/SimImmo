@@ -97,7 +97,7 @@ interest_rate = st.sidebar.number_input("Taux d'intérêt annuel (%)", min_value
 loan_duration_years = st.sidebar.slider("Durée du remboursement (années)", min_value=1, max_value=30, value=20)
 
 # Calcul des résultats
-if st.sidebar.button("Calculer le Prêt"):
+if st.sidebar.button("Calculer le Prêt 🚀"):
     monthly_payment, total_credit_cost, amortization_table = calculate_loan(
         principal_loan, interest_rate, loan_duration_years
     )
