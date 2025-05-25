@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import requests
+from bs4 import BeautifulSoup
 
 
 
@@ -209,3 +211,68 @@ else:
 
 st.markdown("---")
 st.markdown("Développé en binôme avec Gemini ;)")
+
+
+
+def get_meilleurtaux_rate():
+    """
+    Récupère le taux moyen immobilier sur 15 ans depuis le site Meilleurtaux.
+    """
+    url = "https://www.meilleurtaux.com/" # L'URL de la page à scraper
+    try:
+        # Envoyer une requête GET à l'URL
+        response = requests.get(url)
+        response.raise_for_status()  # Lève une exception pour les codes d'état HTTP erreurs (4xx ou 5xx)
+
+        # Parser le contenu HTML de la page
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Trouver l'élément qui contient le taux.
+        # Basé sur l'extrait de code fourni, le taux est dans un <b>
+        # à l'intérieur d'un div avec la classe 'foot', qui est lui-même
+        # à l'intérieur d'un <a> avec la classe 'cards fc'.
+        # Nous allons chercher le div 'foot' qui contient le texte "Taux moyen ... sur 15 ans".
+        
+        # Trouver le lien du crédit immobilier
+        credit_immobilier_card = soup.find('a', class_='cards fc', href='/demande-simulation/credit-immobilier/')
+
+        if credit_immobilier_card:
+            # À l'intérieur de cette carte, trouver le div avec la classe 'foot'
+            foot_div = credit_immobilier_card.find('div', class_='foot')
+            if foot_div:
+                # À l'intérieur du div 'foot', trouver la balise <b> qui contient le taux
+                rate_tag = foot_div.find('b')
+                if rate_tag:
+                    rate_text = rate_tag.get_text(strip=True)
+                    # Nettoyer le texte pour ne garder que le pourcentage numérique
+                    # Par exemple, "2,90 %" deviendra "2.90"
+                    cleaned_rate = rate_text.replace(',', '.').replace('%', '').strip()
+                    return cleaned_rate
+                else:
+                    st.error("Impossible de trouver la balise <b> contenant le taux.")
+            else:
+                st.error("Impossible de trouver le div 'foot' pour le crédit immobilier.")
+        else:
+            st.error("Impossible de trouver la carte 'Crédit immobilier'.")
+
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de la récupération de la page web : {e}")
+    except Exception as e:
+        st.error(f"Une erreur inattendue s'est produite : {e}")
+    return None
+
+# --- Application Streamlit ---
+st.title("Taux Moyen Immobilier Meilleurtaux")
+
+st.write("Ceci est une application Streamlit qui récupère le taux moyen affiché sur la page d'accueil de Meilleurtaux.com.")
+
+if st.button("Actualiser le taux"):
+    with st.spinner("Récupération du taux en cours..."):
+        taux = get_meilleurtaux_rate()
+        if taux:
+            st.success(f"Le taux moyen immobilier sur 15 ans est : **{taux} %**")
+        else:
+            st.warning("Le taux n'a pas pu être récupéré. Veuillez réessayer plus tard ou vérifier la structure du site.")
+
+st.markdown("---")
+st.markdown("Note : Le scraping web peut être affecté par les changements de structure du site web cible. Si le taux ne s'affiche plus, le code de scraping pourrait nécessiter une mise à jour.")
