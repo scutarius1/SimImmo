@@ -35,8 +35,8 @@ def calculate_loan(principal, annual_interest_rate, duration_years):
     months = []
     remaining_principal = []
     # Il faut initialiser ces listes pour les données mensuelles
-    monthly_principal_paid = [] # <--- AJOUTEZ CETTE LIGNE
-    monthly_interest_paid = []  # <--- AJOUTEZ CETTE LIGNE
+    monthly_principal_paid = []
+    monthly_interest_paid = []  
     cumulative_paid_principal = []
     cumulative_paid_interest = []
 
@@ -161,7 +161,7 @@ if st.sidebar.button("Calculer le Prêt"):
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # --- DÉBUT DU SNIPPET À AJOUTER POUR LE NOUVEAU GRAPHIQUE ---
+    # ##### Composition Mensuelle de la Mensualité (Intérêts vs Capital) ---
     st.markdown("##### Composition Mensuelle de la Mensualité (Intérêts vs Capital)")
     fig_monthly = go.Figure()
 
@@ -196,7 +196,6 @@ if st.sidebar.button("Calculer le Prêt"):
         margin=dict(l=20, r=20, t=30, b=20)
     )
     st.plotly_chart(fig_monthly, use_container_width=True)
-    # --- FIN DU SNIPPET À AJOUTER --
 
     st.subheader("Tableau d'Amortissement")
     st.dataframe(amortization_table.style.format({
