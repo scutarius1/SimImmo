@@ -3,6 +3,16 @@ import pandas as pd
 import plotly.graph_objects as go
 from pages import taux
 
+#from tools.session_tracker import track_user
+#import time
+
+#st.title("App avec tracking")
+# Lancement du tracking
+#start = track_user()
+# Calcul du temps passé sur la page (approximatif)
+#elapsed = int(time.time() - start)
+#st.write(f"Temps passé sur cette page : {elapsed} secondes")
+
 
 def calculate_loan(principal, annual_interest_rate, duration_years):
     """
